@@ -1,4 +1,5 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import bcrypt from "bcrypt";
 interface user {
   fullName: string;
   email: string;
@@ -56,7 +57,7 @@ export const createUser = async (input: user) => {
   }
 };
 
-export const updateUser = async (id: string | undefined, input: user) => {
+export const updateUser = async (id: string | undefined, input: user) => {  
   const {
     fullName,
     email,
@@ -65,5 +66,19 @@ export const updateUser = async (id: string | undefined, input: user) => {
     contactInfo,
     profilePicture,
   } = input;
-  
+  const encPassword = password ? await bcrypt.hash(password, 10) : undefined;
+
+  return prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      email: email && { set: email },
+      password: encPassword && { set: encPassword },
+      fullName: fullName && { set: fullName },
+      description: description && { set: description },
+      contactInfo: contactInfo && { set: contactInfo },
+      profilePicture: profilePicture && { set: profilePicture },
+    },
+  });
 };

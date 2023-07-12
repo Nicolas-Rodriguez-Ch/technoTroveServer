@@ -17,7 +17,7 @@ export const login = (email: string) => {
     },
   });
 };
-export const signToken = (payload: any): string => {
+export const signToken = (payload: DecodedToken): string => {
   const token = jwt.sign(payload, secret, { expiresIn: tokenExpirationTime });
   return token;
 };

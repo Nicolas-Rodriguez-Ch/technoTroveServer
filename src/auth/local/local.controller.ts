@@ -45,15 +45,19 @@ export const loginController = async (
   try {
     const { email, password } = req.body;
     const user = await login(email);
+
     if (!user) {
       throw new Error("Email or password are incorrect");
     }
     const isValid: boolean = await bcrypt.compare(password, user.password);
+
     if (!isValid) {
       throw new Error("Email or Password are incorrect");
     }
+
     const { fullName, id } = user;
     const token = signToken({ id });
+
     res.setHeader("Authorization", `Bearer ${token}`);
     res.status(201).send({
       message: "User logged in successfully",
