@@ -57,7 +57,7 @@ export const createUser = async (input: user) => {
   }
 };
 
-export const updateUser = async (id: string | undefined, input: user) => {  
+export const updateUser = async (id: string | undefined, input: user) => {
   const {
     fullName,
     email,
@@ -79,6 +79,21 @@ export const updateUser = async (id: string | undefined, input: user) => {
       description: description && { set: description },
       contactInfo: contactInfo && { set: contactInfo },
       profilePicture: profilePicture && { set: profilePicture },
+    },
+  });
+};
+
+export const getUserById = async (id: string) => {
+  return prisma.user.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      Project: {
+        where: {
+          active: true,
+        },
+      },
     },
   });
 };
