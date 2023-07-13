@@ -19,7 +19,19 @@ export const getAllUsers = () => {
       description: true,
       contactInfo: true,
       profilePicture: true,
-      Project: true,
+      Project: {
+        select: {
+          id: true,
+          active: true,
+          title: true,
+          description: true,
+          images: true,
+          links: true,
+        },
+        where: {
+          active: true,
+        },
+      },
     },
   });
 };
@@ -107,6 +119,35 @@ export const deleteUser = async (id: string) => {
   return prisma.user.delete({
     where: {
       id,
+    },
+  });
+};
+
+export const getUserProfile = async (id: string) => {
+  return prisma.user.findFirst({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      fullName: true,
+      email: true,
+      description: true,
+      contactInfo: true,
+      profilePicture: true,
+      Project: {
+        select: {
+          id: true,
+          active: true,
+          title: true,
+          description: true,
+          images: true,
+          links: true,
+        },
+        where: {
+          active: true,
+        },
+      },
     },
   });
 };

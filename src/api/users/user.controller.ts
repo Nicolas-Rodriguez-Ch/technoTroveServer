@@ -3,11 +3,10 @@ import {
   deleteUser,
   getAllUsers,
   getUserById,
+  getUserProfile,
   updateUser,
 } from "./user.services";
-import { Prisma, PrismaClient } from "@prisma/client";
 import { AuthUser } from "../../auth/auth.types";
-const prisma = new PrismaClient();
 
 // gets all the users from the db
 
@@ -72,6 +71,25 @@ export const deleteUserController = async (
     }
     const user = await deleteUser(id);
     res.status(202).json({ message: "User deleted successfully", data: user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserProfileController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const user = await getUserProfile(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res
+      .status(200)
+      .send({ message: "User retrieved successfully", data: user });
   } catch (error) {
     next(error);
   }
