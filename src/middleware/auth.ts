@@ -18,7 +18,7 @@ export const auth = (
     }
     const decodedToken = verifyToken(token);
     if (!decodedToken) {
-      throw new Error("Invalid token, please logg in again");
+      throw new Error("Invalid token, please log in again");
     }
     const { id } = verifyToken(token) as DecodedToken;
     req.user = id;

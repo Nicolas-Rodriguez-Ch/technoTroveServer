@@ -102,6 +102,14 @@ export const getUserById = async (id: string) => {
     },
     include: {
       Project: {
+        select: {
+          id: true,
+          active: true,
+          title: true,
+          description: true,
+          images: true,
+          links: true,
+        },
         where: {
           active: true,
         },
