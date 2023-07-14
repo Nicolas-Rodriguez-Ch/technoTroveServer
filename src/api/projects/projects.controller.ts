@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { AuthUser } from "../../auth/auth.types";
 import {
   createProject,
+  deleteProject,
   getAllProjects,
   getProjectById,
   updateProject,
@@ -71,7 +72,21 @@ export const updateProjectController = async (
   try {
     const { id } = req.params;
     const project = await updateProject(id, req.body);
-    res.status(200).json({message: 'Project updated!', data: project})
+    res.status(200).json({ message: "Project updated!", data: project });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteProjectController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const project = await deleteProject(id);
+    res.status(200).json({ message: "Project deleted succesfully", data: project });
   } catch (error) {
     next(error);
   }

@@ -12,6 +12,9 @@ const prisma = new PrismaClient();
 
 export const getAllProjects = () => {
   return prisma.project.findMany({
+    where: {
+      active: true
+    },
     select: {
       title: true,
       description: true,
@@ -72,6 +75,17 @@ export const updateProject = (id: string, input: project) => {
       description: description && { set: description },
       images: images && { set: images },
       links: links && { set: images },
+    },
+  });
+};
+
+export const deleteProject = (id: string) => {
+  return prisma.project.update({
+    where: {
+      id,
+    },
+    data: {
+      active: false,
     },
   });
 };
