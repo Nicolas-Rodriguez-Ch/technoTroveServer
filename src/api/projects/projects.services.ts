@@ -13,12 +13,13 @@ const prisma = new PrismaClient();
 export const getAllProjects = () => {
   return prisma.project.findMany({
     where: {
-      active: true
+      active: true,
     },
     select: {
       title: true,
       description: true,
       images: true,
+      id: true,
       User: {
         select: {
           fullName: true,

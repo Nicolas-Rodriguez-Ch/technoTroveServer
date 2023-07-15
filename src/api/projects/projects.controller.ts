@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-
 import { AuthUser } from "../../auth/auth.types";
 import {
   createProject,
@@ -8,6 +7,11 @@ import {
   getProjectById,
   updateProject,
 } from "./projects.services";
+import checkProjectOwnerShip from "./projects.utils";
+
+interface CloudinaryResponse {
+  url: string;
+}
 
 export const getAllProjectsController = async (
   req: Request,
@@ -28,12 +32,15 @@ export const createProjectController = async (
   next: NextFunction
 ) => {
   try {
-    if (!req.user) {
+    const userId = req.user;
+    if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const { user: userId } = req;
-    const { title, description, images, links } = req.body;
+    const { title, description, links, files } = req.body;
+    const images = Array.isArray(files)
+      ? files.map((file: CloudinaryResponse) => file.url)
+      : [];
     const project = await createProject({
       title,
       description,
@@ -46,7 +53,6 @@ export const createProjectController = async (
     next(error);
   }
 };
-
 export const getProjectByIdController = async (
   req: Request,
   res: Response,
@@ -65,13 +71,37 @@ export const getProjectByIdController = async (
 };
 
 export const updateProjectController = async (
-  req: Request,
+  req: AuthUser,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { id } = req.params;
-    const project = await updateProject(id, req.body);
+    const { title, description, links, files } = req.body;
+    const userId = req.user;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { status, message } = await checkProjectOwnerShip(userId, id);
+
+    if (status !== 200) {
+      return res.status(status).json({ message });
+    }
+
+    const images = Array.isArray(files)
+      ? files.map((file: CloudinaryResponse) => file.url)
+      : [];
+
+    const project = await updateProject(id, {
+      title,
+      description,
+      images,
+      links,
+      userId,
+    });
+
     res.status(200).json({ message: "Project updated!", data: project });
   } catch (error) {
     next(error);
@@ -79,14 +109,28 @@ export const updateProjectController = async (
 };
 
 export const deleteProjectController = async (
-  req: Request,
+  req: AuthUser,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { id } = req.params;
+    const userId = req.user;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { status, message } = await checkProjectOwnerShip(userId, id);
+
+    if (status !== 200) {
+      return res.status(status).json({ message });
+    }
+
     const project = await deleteProject(id);
-    res.status(200).json({ message: "Project deleted succesfully", data: project });
+    res
+      .status(200)
+      .json({ message: "Project deleted succesfully", data: project });
   } catch (error) {
     next(error);
   }

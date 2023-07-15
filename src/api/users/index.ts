@@ -7,13 +7,14 @@ import {
   updateUserController,
 } from "./user.controller";
 import { auth } from "../../middleware/auth";
+import processFileUploads from "../../middleware/uploads";
 
 const router = Router();
 
 router.get("/", getAllUsersController);
 router.get("/profile", auth, getUserByTokenController);
 router.get("/:id", getUserProfileController);
-router.put("/", auth, updateUserController);
+router.put("/", auth, processFileUploads, updateUserController);
 router.delete("/deactivate", auth, deleteUserController);
 
 export default router;

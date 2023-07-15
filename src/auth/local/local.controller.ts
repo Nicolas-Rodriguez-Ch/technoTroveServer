@@ -21,9 +21,12 @@ export const signUpController = async (
     }
     const password = await bcrypt.hash(passToEncrypt, 10);
 
+    const profilePicture = req.body.files[0]?.url || null;
+
     const { id } = await createUser({
       ...req.body,
       password,
+      profilePicture
     });
     const token = signToken({ id });
 
