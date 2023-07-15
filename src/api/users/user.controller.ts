@@ -7,6 +7,7 @@ import {
   updateUser,
 } from "./user.services";
 import { AuthUser } from "../../auth/auth.types";
+import convertFilesToImagesUrls from "../../utils/convertFilesToImageUrls";
 
 // gets all the users from the db
 
@@ -32,7 +33,9 @@ export const updateUserController = async (
 ) => {
   try {
     const id = req.user;
-    const user = await updateUser(id, req.body);
+    const files = req.body.files || [];
+    const images = convertFilesToImagesUrls(files); 
+    const profilePicture = images[0] || null;    const user = await updateUser(id, { ...req.body, profilePicture });
     res.status(200).json({ message: "User updated", data: user });
   } catch (error) {
     next(error);

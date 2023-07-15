@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { createUser } from "../../api/users/user.services";
 import { login, signToken } from "../auth.services";
+import convertFilesToImagesUrls from "../../utils/convertFilesToImageUrls";
 
 const prisma = new PrismaClient();
 
@@ -12,7 +13,13 @@ export const signUpController = async (
   next: NextFunction
 ) => {
   try {
-    const { email, fullName, password: passToEncrypt } = req.body;
+    const { email, fullName, password: passToEncrypt, contactInfo } = req.body;
+    let contactInfoArray: string[] = [];
+    if (typeof contactInfo === "string") {
+      contactInfoArray = contactInfo
+        .split(",")
+        .map((info: string) => info.trim());
+    }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
@@ -21,9 +28,15 @@ export const signUpController = async (
     }
     const password = await bcrypt.hash(passToEncrypt, 10);
 
+    const profilePictures = convertFilesToImagesUrls(req.body.files);
+    const profilePicture =
+      profilePictures.length > 0 ? profilePictures[0] : null;
+
     const { id } = await createUser({
       ...req.body,
       password,
+      profilePicture,
+      contactInfo: contactInfoArray,
     });
     const token = signToken({ id });
 

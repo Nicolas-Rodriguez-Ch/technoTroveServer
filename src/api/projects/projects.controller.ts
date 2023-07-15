@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-
 import { AuthUser } from "../../auth/auth.types";
 import {
   createProject,
@@ -8,6 +7,8 @@ import {
   getProjectById,
   updateProject,
 } from "./projects.services";
+import checkProjectOwnerShip from "./projects.utils";
+import convertFilesToImagesUrls from "../../utils/convertFilesToImageUrls";
 
 export const getAllProjectsController = async (
   req: Request,
@@ -28,18 +29,24 @@ export const createProjectController = async (
   next: NextFunction
 ) => {
   try {
-    if (!req.user) {
+    const userId = req.user;
+    if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+    const { title, description, links, files } = req.body;
 
-    const { user: userId } = req;
-    const { title, description, images, links } = req.body;
+    let linksArray: string[] = [];
+    if (typeof links === "string") {
+      linksArray = links.split(",").map((link: string) => link.trim());
+    }
+
+    const images = convertFilesToImagesUrls(files);
     const project = await createProject({
       title,
       description,
       userId,
       images,
-      links,
+      links: linksArray,
     });
     res.status(201).json({ message: "Project created!", data: project });
   } catch (error) {
@@ -65,13 +72,35 @@ export const getProjectByIdController = async (
 };
 
 export const updateProjectController = async (
-  req: Request,
+  req: AuthUser,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { id } = req.params;
-    const project = await updateProject(id, req.body);
+    const { title, description, links, files } = req.body;
+    const userId = req.user;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { status, message } = await checkProjectOwnerShip(userId, id);
+
+    if (status !== 200) {
+      return res.status(status).json({ message });
+    }
+
+    const images = convertFilesToImagesUrls(files);
+
+    const project = await updateProject(id, {
+      title,
+      description,
+      images,
+      links,
+      userId,
+    });
+
     res.status(200).json({ message: "Project updated!", data: project });
   } catch (error) {
     next(error);
@@ -79,14 +108,28 @@ export const updateProjectController = async (
 };
 
 export const deleteProjectController = async (
-  req: Request,
+  req: AuthUser,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { id } = req.params;
+    const userId = req.user;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { status, message } = await checkProjectOwnerShip(userId, id);
+
+    if (status !== 200) {
+      return res.status(status).json({ message });
+    }
+
     const project = await deleteProject(id);
-    res.status(200).json({ message: "Project deleted succesfully", data: project });
+    res
+      .status(200)
+      .json({ message: "Project deleted succesfully", data: project });
   } catch (error) {
     next(error);
   }
