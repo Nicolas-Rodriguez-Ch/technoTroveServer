@@ -33,21 +33,27 @@ export const createProjectController = async (
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-
     const { title, description, links, files } = req.body;
+
+    let linksArray: string[] = [];
+    if (typeof links === "string") {
+      linksArray = links.split(",").map((link: string) => link.trim());
+    }
+
     const images = convertFilesToImagesUrls(files);
     const project = await createProject({
       title,
       description,
       userId,
       images,
-      links,
+      links: linksArray,
     });
     res.status(201).json({ message: "Project created!", data: project });
   } catch (error) {
     next(error);
   }
 };
+
 export const getProjectByIdController = async (
   req: Request,
   res: Response,
