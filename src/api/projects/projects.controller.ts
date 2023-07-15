@@ -8,10 +8,7 @@ import {
   updateProject,
 } from "./projects.services";
 import checkProjectOwnerShip from "./projects.utils";
-
-interface CloudinaryResponse {
-  url: string;
-}
+import convertFilesToImagesUrls from "../../utils/convertFilesToImageUrls";
 
 export const getAllProjectsController = async (
   req: Request,
@@ -38,9 +35,7 @@ export const createProjectController = async (
     }
 
     const { title, description, links, files } = req.body;
-    const images = Array.isArray(files)
-      ? files.map((file: CloudinaryResponse) => file.url)
-      : [];
+    const images = convertFilesToImagesUrls(files);
     const project = await createProject({
       title,
       description,
@@ -90,9 +85,7 @@ export const updateProjectController = async (
       return res.status(status).json({ message });
     }
 
-    const images = Array.isArray(files)
-      ? files.map((file: CloudinaryResponse) => file.url)
-      : [];
+    const images = convertFilesToImagesUrls(files);
 
     const project = await updateProject(id, {
       title,
