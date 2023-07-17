@@ -18,6 +18,7 @@ model User {
   description    String       @db.VarChar(500)
   contactInfo    String[]
   profilePicture String?
+  auth0UserId    String?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   Project        Project[]

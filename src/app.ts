@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import configExpress from "./confg/express";
+import configExpress from "./config/express";
 import routes from "./routes";
 import { PORT } from "../constants/secrets";
 import handleError from "./middleware/handleError";
