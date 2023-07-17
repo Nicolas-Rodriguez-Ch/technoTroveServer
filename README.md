@@ -46,3 +46,7 @@ Getting Started
 To test out the Technotrove Server API, feel free to use our shared Postman requests. You can find the collection here.
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/13473689-81d6b22b-f7ce-4793-be9b-d61526f84e3b?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D13473689-81d6b22b-f7ce-4793-be9b-d61526f84e3b%26entityType%3Dcollection%26workspaceId%3D2a7615bb-7af4-4c7c-8578-9ce7d14a24c9)
+
+## License
+
+This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE) file for details.
