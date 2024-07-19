@@ -86,10 +86,7 @@ export const updateProject = async (id: string, input: project) => {
     }
   }
   if (input.links !== undefined && input.links.length > 0) {
-    const newLinks = [...existingProject.links, ...input.links];
-    if (JSON.stringify(newLinks) !== JSON.stringify(existingProject.links)) {
-      data.links = newLinks;
-    }
+    data.links = input.links;
   }
   return prisma.project.update({
     where: {
