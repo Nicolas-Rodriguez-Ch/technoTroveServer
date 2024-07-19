@@ -16,19 +16,20 @@ module.exports = {
     '@typescript-eslint',
     'sort-imports-es6-autofix',
   ],
-  rules: {
+  'rules': {
     'quotes': ['error', 'single'],
     'semi': ['error', 'always'],
     'sort-imports-es6-autofix/sort-imports-es6': [
       'error',
       {
-        ignoreCase: true,
-        ignoreMemberSort: false,
-        memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single']
-      },
+        'ignoreCase': true,
+        'ignoreMemberSort': false,
+        'memberSyntaxSortOrder': ['none', 'all', 'multiple', 'single']
+      }
     ],
     '@typescript-eslint/no-unused-vars': ['error', {
+      'varsIgnorePattern': '^_$',
       'argsIgnorePattern': '^_'
-    }],
-  },
+    }]
+  }
 };
