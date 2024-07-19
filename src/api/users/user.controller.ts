@@ -1,13 +1,13 @@
-import { Request, Response, NextFunction } from "express";
+import { AuthUser } from '../../auth/auth.types';
 import {
   deleteUser,
   getAllUsers,
   getUserById,
   getUserProfile,
   updateUser,
-} from "./user.services";
-import { AuthUser } from "../../auth/auth.types";
-import convertFilesToImagesUrls from "../../utils/convertFilesToImageUrls";
+} from './user.services';
+import { NextFunction, Request, Response } from 'express';
+import convertFilesToImagesUrls from '../../utils/convertFilesToImageUrls';
 
 // gets all the users from the db
 
@@ -20,7 +20,7 @@ export const getAllUsersController = async (
     const users = await getAllUsers();
     res
       .status(200)
-      .send({ message: "Users retrieved successfully", data: users });
+      .send({ message: 'Users retrieved successfully', data: users });
   } catch (error) {
     next(error);
   }
@@ -36,7 +36,7 @@ export const updateUserController = async (
     const files = req.body.files || [];
     const images = convertFilesToImagesUrls(files); 
     const profilePicture = images[0] || null;    const user = await updateUser(id, { ...req.body, profilePicture });
-    res.status(200).json({ message: "User updated", data: user });
+    res.status(200).json({ message: 'User updated', data: user });
   } catch (error) {
     next(error);
   }
@@ -50,13 +50,13 @@ export const getUserByTokenController = async (
   try {
     const { user } = req;
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: 'User not found' });
     }
     const fetchedUser = await getUserById(user as string);
     if (!fetchedUser) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json({ message: "User found!", data: fetchedUser });
+    res.status(200).json({ message: 'User found!', data: fetchedUser });
   } catch (error) {
     next(error);
   }
@@ -70,10 +70,10 @@ export const deleteUserController = async (
   try {
     const { user: id } = req;
     if (!id) {
-      return res.status(404).json({ message: "User not Found" });
+      return res.status(404).json({ message: 'User not Found' });
     }
     const user = await deleteUser(id);
-    res.status(202).json({ message: "User deleted successfully", data: user });
+    res.status(202).json({ message: 'User deleted successfully', data: user });
   } catch (error) {
     next(error);
   }
@@ -88,11 +88,11 @@ export const getUserProfileController = async (
     const { id } = req.params;
     const user = await getUserProfile(id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
     res
       .status(200)
-      .send({ message: "User retrieved successfully", data: user });
+      .send({ message: 'User retrieved successfully', data: user });
   } catch (error) {
     next(error);
   }
