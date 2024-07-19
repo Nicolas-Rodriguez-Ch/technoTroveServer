@@ -1,10 +1,9 @@
-import { ErrorRequestHandler, Request, Response, NextFunction } from "express";
+import { ErrorRequestHandler, Request, Response } from 'express';
 
 const handleError: ErrorRequestHandler = (
   err: Error,
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) => {
   res.status(500).json({ message: err.message });
 };

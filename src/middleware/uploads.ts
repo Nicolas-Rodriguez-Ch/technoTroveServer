@@ -1,6 +1,6 @@
-import multer from "multer";
-import { v2 as cloudinary } from "cloudinary";
-import { NextFunction, Request, Response } from "express";
+import { v2 as cloudinary } from 'cloudinary';
+import { NextFunction, Request, Response } from 'express';
+import multer from 'multer';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,11 +10,11 @@ cloudinary.config({
 
 const multerStorage = multer.memoryStorage();
 const multerUpload = multer({ storage: multerStorage });
-const multiFileUploadMiddleware = multerUpload.array("file", 5);
+const multiFileUploadMiddleware = multerUpload.array('file', 5);
 
 const uploadToCloudinary = async (dataURI: string) => {
   const result = await cloudinary.uploader.upload(dataURI, {
-    resource_type: "auto",
+    resource_type: 'auto',
   });
   return result;
 };
@@ -49,8 +49,8 @@ const processFileUploads = async (
     const responses = await Promise.all(
       (req.files as Express.Multer.File[]).map(
         async (file: Express.Multer.File) => {
-          const b64 = Buffer.from(file.buffer).toString("base64");
-          let dataURI = "data:" + file.mimetype + ";base64," + b64;
+          const b64 = Buffer.from(file.buffer).toString('base64');
+          const dataURI = 'data:' + file.mimetype + ';base64,' + b64;
           return uploadToCloudinary(dataURI);
         }
       )

@@ -1,5 +1,5 @@
-import { PrismaClient, Prisma } from "@prisma/client";
-import bcrypt from "bcrypt";
+import { Prisma, PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
 interface user {
   fullName: string;
   email: string;
@@ -60,9 +60,9 @@ export const createUser = async (input: user) => {
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2002"
+      error.code === 'P2002'
     ) {
-      throw new Error("Email already exists");
+      throw new Error('Email already exists');
     } else {
       throw error;
     }

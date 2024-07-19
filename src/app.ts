@@ -1,8 +1,8 @@
-import express, { Express } from "express";
-import configExpress from "./config/express";
-import routes from "./routes";
-import { PORT } from "../constants/secrets";
-import handleError from "./middleware/handleError";
+import { PORT } from '../constants/secrets';
+import configExpress from './config/express';
+import express, { Express } from 'express';
+import handleError from './middleware/handleError';
+import routes from './routes';
 
 const app: Express = express();
 
