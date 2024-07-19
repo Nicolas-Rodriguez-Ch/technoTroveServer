@@ -70,28 +70,42 @@ export const createUser = async (input: user) => {
 };
 
 export const updateUser = async (id: string | undefined, input: user) => {
-  const {
-    fullName,
-    email,
-    password,
-    description,
-    contactInfo,
-    profilePicture,
-  } = input;
-  const encPassword = password ? await bcrypt.hash(password, 10) : undefined;
+  const existingUser = await prisma.user.findUnique({
+    where: { id },
+  });
+  if (!existingUser) {
+    throw new Error('User not found');
+  }
+  const data: Partial<user> = {};
+  if (input.fullName != undefined) {
+    data.fullName = input.fullName;
+  }
+  if (input.email != undefined) {
+    data.email = input.email;
+  }
+  if (input.password != undefined) {
+    const encPassword = data.password
+      ? await bcrypt.hash(data.password, 10)
+      : undefined;
 
+    data.password = encPassword;
+  }
+  if (input.description != undefined) {
+    data.description = input.description;
+  }
+  if (input.contactInfo != undefined && input.contactInfo.length > 0) {
+    data.contactInfo = input.contactInfo;
+  }
+  if (input.profilePicture !== undefined && input.profilePicture.length > 0) {
+    if (input.profilePicture !== existingUser.profilePicture) {
+      data.profilePicture = input.profilePicture;
+    }
+  }
   return prisma.user.update({
     where: {
       id,
     },
-    data: {
-      email: email && { set: email },
-      password: encPassword && { set: encPassword },
-      fullName: fullName && { set: fullName },
-      description: description && { set: description },
-      contactInfo: contactInfo && { set: contactInfo },
-      profilePicture: profilePicture && { set: profilePicture },
-    },
+    data,
   });
 };
 
