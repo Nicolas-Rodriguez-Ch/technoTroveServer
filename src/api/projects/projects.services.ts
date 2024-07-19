@@ -66,6 +66,12 @@ export const getProjectById = (id: string) => {
 };
 
 export const updateProject = async (id: string, input: project) => {
+  const existingProject = await prisma.project.findUnique({
+    where: { id },
+  });
+  if (!existingProject) {
+    throw new Error('Project not found');
+  }
   const data: Partial<project> = {};
   if (input.title !== undefined) {
     data.title = input.title;
@@ -74,11 +80,16 @@ export const updateProject = async (id: string, input: project) => {
     data.description = input.description;
   }
   if (input.images !== undefined && input.images.length > 0) {
-    data.images = input.images;
+    const newImages = [...existingProject.images, ...input.images];
+    if (JSON.stringify(newImages) !== JSON.stringify(existingProject.images)) {
+      data.images = newImages;
+    }
   }
-
   if (input.links !== undefined && input.links.length > 0) {
-    data.links = input.links;
+    const newLinks = [...existingProject.links, ...input.links];
+    if (JSON.stringify(newLinks) !== JSON.stringify(existingProject.links)) {
+      data.links = newLinks;
+    }
   }
   return prisma.project.update({
     where: {
