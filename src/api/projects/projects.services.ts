@@ -75,7 +75,7 @@ export const updateProject = (id: string, input: project) => {
       title: title && { set: title },
       description: description && { set: description },
       images: images && { set: images },
-      links: links && { set: images },
+      links: links && { set: links },
     },
   });
 };

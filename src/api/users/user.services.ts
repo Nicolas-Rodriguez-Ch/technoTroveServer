@@ -19,6 +19,7 @@ export const getAllUsers = () => {
       description: true,
       contactInfo: true,
       profilePicture: true,
+      id: true,
       Project: {
         select: {
           id: true,

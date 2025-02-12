@@ -9,7 +9,6 @@ const routes = (app: Application): void => {
   app.use("/api/healthCheck", healthCheck);
   app.use("/api/users", users);
   app.use("/api/projects", projects);
-
   app.use("/auth/local", authLocal);
 };
 
