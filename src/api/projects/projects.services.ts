@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 interface project {
   title: string;
@@ -65,18 +65,34 @@ export const getProjectById = (id: string) => {
   });
 };
 
-export const updateProject = (id: string, input: project) => {
-  const { title, description, images, links } = input;
+export const updateProject = async (id: string, input: project) => {
+  const existingProject = await prisma.project.findUnique({
+    where: { id },
+  });
+  if (!existingProject) {
+    throw new Error('Project not found');
+  }
+  const data: Partial<project> = {};
+  if (input.title !== undefined) {
+    data.title = input.title;
+  }
+  if (input.description !== undefined) {
+    data.description = input.description;
+  }
+  if (input.images !== undefined && input.images.length > 0) {
+    const newImages = [...existingProject.images, ...input.images];
+    if (JSON.stringify(newImages) !== JSON.stringify(existingProject.images)) {
+      data.images = newImages;
+    }
+  }
+  if (input.links !== undefined && input.links.length > 0) {
+    data.links = input.links;
+  }
   return prisma.project.update({
     where: {
       id,
     },
-    data: {
-      title: title && { set: title },
-      description: description && { set: description },
-      images: images && { set: images },
-      links: links && { set: links },
-    },
+    data,
   });
 };
 

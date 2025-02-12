@@ -1,10 +1,10 @@
-import express, { Application, urlencoded } from "express";
-import morgan from "morgan";
-import cors from "cors";
+import cors from 'cors';
+import express, { Application, urlencoded } from 'express';
+import morgan from 'morgan';
 
 const configExpress = (app: Application): void => {
   app.use(express.json());
-  app.use(morgan("dev"));
+  app.use(morgan('dev'));
   app.use(urlencoded({ extended: true }));
   app.use(cors());
 };
