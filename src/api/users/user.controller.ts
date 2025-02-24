@@ -34,8 +34,9 @@ export const updateUserController = async (
   try {
     const id = req.user;
     const files = req.body.files || [];
-    const images = convertFilesToImagesUrls(files); 
-    const profilePicture = images[0] || null;    const user = await updateUser(id, { ...req.body, profilePicture });
+    const images = convertFilesToImagesUrls(files);
+    const profilePicture = images[0] || null;
+    const user = await updateUser(id, { ...req.body, profilePicture });
     res.status(200).json({ message: 'User updated', data: user });
   } catch (error) {
     next(error);
