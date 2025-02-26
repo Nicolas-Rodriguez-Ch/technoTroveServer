@@ -28,7 +28,7 @@ export const createProjectController = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {    
+  try {
     const userId = req.user;
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized' });

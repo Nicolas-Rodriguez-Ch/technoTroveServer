@@ -102,11 +102,7 @@ export const updateUser = async (id: string | undefined, input: user) => {
       data.profilePicture = input.profilePicture;
     }
   }
-  console.log(data);
-console.log(id);
-console.log(input);
 
-  
   return prisma.user.update({
     where: {
       id,

@@ -38,7 +38,7 @@ const processFileUploads = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {  
+) => {
   try {
     await executeMiddleware(req, res, multiFileUploadMiddleware);
 

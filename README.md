@@ -60,6 +60,7 @@ CLOUDINARY_CLOUD_NAME="<your-cloudinary-cloud-name>"
 CLOUDINARY_API_KEY="<your-cloudinary-api-key>"
 CLOUDINARY_API_SECRET="<your-cloudinary-api-secret>"
 ```
+
 In the root directory, you can find a [.env.example](.env.example) file with the environment variables that are being used throughout the project.
 
 Please replace your-database-url, your-port, your-secret-key, your-cloudinary-cloud-name, your-cloudinary-api-key, and your-cloudinary-api-secret with your actual data.

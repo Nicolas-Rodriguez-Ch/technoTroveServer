@@ -6,7 +6,7 @@ export const auth = (
   req: Request & AuthUser,
   res: Response,
   next: NextFunction
-) => {  
+) => {
   try {
     const { authorization } = req.headers;
     if (!authorization) {
